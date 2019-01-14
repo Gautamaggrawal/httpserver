@@ -34,7 +34,7 @@ LIST using curl:
 
 DELETE using curl:
     
-    curl -X GET http://localhost:8080/api/delete/1 -H "Content-Type: application/json
+    curl -X DELETE http://localhost:8080/api/delete/1 -H "Content-Type: application/json
 
 
 
