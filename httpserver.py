@@ -26,6 +26,7 @@ class RestHandler(BaseHTTPRequestHandler):
                     data[id]={'id':id,'name':s}
                     records.update(data)
                     print(records)
+
                     self.wfile.write(json.dumps({'message': 'PUT Successfull', 'code': 200}))
             else:
                 self.send_response(403)
@@ -33,8 +34,6 @@ class RestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
         except:
             pass
-        
-
     def do_GET(self):
         try:
             if None != re.search('/api/get/\d', self.path):
@@ -50,15 +49,19 @@ class RestHandler(BaseHTTPRequestHandler):
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
                     self.wfile.write(json.dumps({'error': {'message': 'Bad Request: record does not exist', 'code': 400, 'type': 'Exception'}}))
-                    
             else:
                 self.send_response(403)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(json.dumps({'error': {'message': 'Unsupported GET request', 'code': 403, 'type': 'Exception'}}))
-                
+
             return
-        
+
+        except IOError:
+            self.send_error(404, 'File Not Found: %s' % self.path)
+
+    def do_GET(self):
+        try:
             if None != re.search('/api/list/', self.path):
                 if len(records)!=0:
                     self.send_response(200)
@@ -70,7 +73,6 @@ class RestHandler(BaseHTTPRequestHandler):
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
                     self.wfile.write(json.dumps({'error': {'message': 'Bad Request: record does not exist', 'code': 400, 'type': 'Exception'}}))
-                    
             else:
                 self.send_response(403)
                 self.send_header('Content-Type', 'application/json')
